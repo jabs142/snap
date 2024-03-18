@@ -33,6 +33,12 @@
           "deploymentBucketName": "amplify-snap-dev-141323-deployment",
           "s3Key": "amplify-builds/snapb5547b8dVerifyAuthChallengeResponse-2f706569447765537954-build.zip"
         }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d204rhuo42mqgv",
+          "type": "manual"
+        }
       }
     }
   }
