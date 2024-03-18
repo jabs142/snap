@@ -1,6 +1,10 @@
 # 📷 Snap
 
+Deployed [here] using AWS Amplify (https://dev.d204rhuo42mqgv.amplifyapp.com)
+
 ## 💻 Technologies & Tools Used
+
+![](https://skills.thijs.gg/icons?i=react,vite,js,html,css,figma,graphql,aws,dynamodb,git,github)
 
 ### Frontend Development:
 - React 
@@ -27,12 +31,12 @@
 
 <br>
 
-![](https://skills.thijs.gg/icons?i=react,vite,js,html,css,figma,graphql,aws,dynamodb,git,github)
+
 
 <br>
 
 ## 💻 Concept 
-Real-time photo sharing web application
+Real-time photo sharing web application. More description to come.
 
 <br>
 
@@ -80,7 +84,7 @@ Real-time photo sharing web application
 ## 🎈 Future Improvements
 <ol>
     <li>Users should be able to set their profile pictures  </li>
-    <li>Users should be able to change their profile settings  </li>s
+    <li>Users should be able to change their profile settings  </li>
 </ol>
 
 
