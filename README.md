@@ -2,6 +2,8 @@
 
 Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify 
 
+<br>
+
 ## 💻 Technologies & Tools Used
 
 ![](https://skills.thijs.gg/icons?i=react,vite,js,html,css,figma,graphql,aws,dynamodb,git,github)
@@ -31,9 +33,6 @@ Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify
 
 <br>
 
-
-
-<br>
 
 ## 💻 Concept 
 Real-time photo sharing web application. More description to come.
