@@ -1,6 +1,6 @@
 # 📷 Snap
 
-Deployed [here] using AWS Amplify (https://dev.d204rhuo42mqgv.amplifyapp.com)
+Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify 
 
 ## 💻 Technologies & Tools Used
 
