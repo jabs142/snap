@@ -10,6 +10,11 @@
       "StackName": "amplify-snap-dev-141323",
       "StackId": "arn:aws:cloudformation:us-west-1:975050304471:stack/amplify-snap-dev-141323/55bd44c0-e56c-11ee-8289-02ee6686a3f3",
       "AmplifyAppId": "d204rhuo42mqgv"
+    },
+    "categories": {
+      "api": {
+        "snap": {}
+      }
     }
   }
 }
