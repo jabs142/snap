@@ -73,6 +73,9 @@ export type Post = {
   __typename: "Post",
   id: string,
   title: string,
+  content?: string | null,
+  filePath?: string | null,
+  like: number,
   blog?: Blog | null,
   comments?: ModelCommentConnection | null,
   createdAt: string,
@@ -108,15 +111,33 @@ export type DeleteBlogInput = {
 export type CreatePostInput = {
   id?: string | null,
   title: string,
+  content?: string | null,
+  filePath?: string | null,
+  like: number,
   blogPostsId?: string | null,
 };
 
 export type ModelPostConditionInput = {
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  filePath?: ModelStringInput | null,
+  like?: ModelIntInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
   blogPostsId?: ModelIDInput | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
 export type ModelIDInput = {
@@ -138,6 +159,9 @@ export type ModelIDInput = {
 export type UpdatePostInput = {
   id: string,
   title?: string | null,
+  content?: string | null,
+  filePath?: string | null,
+  like?: number | null,
   blogPostsId?: string | null,
 };
 
@@ -186,6 +210,9 @@ export type ModelBlogConnection = {
 export type ModelPostFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  filePath?: ModelStringInput | null,
+  like?: ModelIntInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
@@ -241,8 +268,23 @@ export type ModelSubscriptionStringInput = {
 export type ModelSubscriptionPostFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   title?: ModelSubscriptionStringInput | null,
+  content?: ModelSubscriptionStringInput | null,
+  filePath?: ModelSubscriptionStringInput | null,
+  like?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionPostFilterInput | null > | null,
   or?: Array< ModelSubscriptionPostFilterInput | null > | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionCommentFilterInput = {
@@ -319,6 +361,9 @@ export type CreatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -346,6 +391,9 @@ export type UpdatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -373,6 +421,9 @@ export type DeletePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -403,6 +454,9 @@ export type CreateCommentMutation = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -427,6 +481,9 @@ export type UpdateCommentMutation = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -451,6 +508,9 @@ export type DeleteCommentMutation = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -509,6 +569,9 @@ export type GetPostQuery = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -539,6 +602,9 @@ export type ListPostsQuery = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -559,6 +625,9 @@ export type GetCommentQuery = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -654,6 +723,9 @@ export type OnCreatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -680,6 +752,9 @@ export type OnUpdatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -706,6 +781,9 @@ export type OnDeletePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content?: string | null,
+    filePath?: string | null,
+    like: number,
     blog?:  {
       __typename: "Blog",
       id: string,
@@ -735,6 +813,9 @@ export type OnCreateCommentSubscription = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -758,6 +839,9 @@ export type OnUpdateCommentSubscription = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,
@@ -781,6 +865,9 @@ export type OnDeleteCommentSubscription = {
       __typename: "Post",
       id: string,
       title: string,
+      content?: string | null,
+      filePath?: string | null,
+      like: number,
       createdAt: string,
       updatedAt: string,
       blogPostsId?: string | null,

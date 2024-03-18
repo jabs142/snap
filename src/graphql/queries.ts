@@ -44,6 +44,9 @@ export const getPost = /* GraphQL */ `query GetPost($id: ID!) {
   getPost(id: $id) {
     id
     title
+    content
+    filePath
+    like
     blog {
       id
       name
@@ -71,6 +74,9 @@ export const listPosts = /* GraphQL */ `query ListPosts(
     items {
       id
       title
+      content
+      filePath
+      like
       createdAt
       updatedAt
       blogPostsId
@@ -87,6 +93,9 @@ export const getComment = /* GraphQL */ `query GetComment($id: ID!) {
     post {
       id
       title
+      content
+      filePath
+      like
       createdAt
       updatedAt
       blogPostsId

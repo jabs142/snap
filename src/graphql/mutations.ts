@@ -75,6 +75,9 @@ export const createPost = /* GraphQL */ `mutation CreatePost(
   createPost(input: $input, condition: $condition) {
     id
     title
+    content
+    filePath
+    like
     blog {
       id
       name
@@ -103,6 +106,9 @@ export const updatePost = /* GraphQL */ `mutation UpdatePost(
   updatePost(input: $input, condition: $condition) {
     id
     title
+    content
+    filePath
+    like
     blog {
       id
       name
@@ -131,6 +137,9 @@ export const deletePost = /* GraphQL */ `mutation DeletePost(
   deletePost(input: $input, condition: $condition) {
     id
     title
+    content
+    filePath
+    like
     blog {
       id
       name
@@ -161,6 +170,9 @@ export const createComment = /* GraphQL */ `mutation CreateComment(
     post {
       id
       title
+      content
+      filePath
+      like
       createdAt
       updatedAt
       blogPostsId
@@ -186,6 +198,9 @@ export const updateComment = /* GraphQL */ `mutation UpdateComment(
     post {
       id
       title
+      content
+      filePath
+      like
       createdAt
       updatedAt
       blogPostsId
@@ -211,6 +226,9 @@ export const deleteComment = /* GraphQL */ `mutation DeleteComment(
     post {
       id
       title
+      content
+      filePath
+      like
       createdAt
       updatedAt
       blogPostsId
