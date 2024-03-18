@@ -3,22 +3,20 @@ import { generateClient } from "aws-amplify/api";
 import { createPost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
 import { CreatePostInput, Post } from "./API";
-// import { withAuthenticator, Button, Heading } from "@aws-amplify/ui-react";
-// import "@aws-amplify/ui-react/styles.css";
-// import { type AuthUser } from "aws-amplify/auth";
-// import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
-// import Profile from "./components/Profile";
+import { withAuthenticator, Button, Heading } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+import { type AuthUser } from "aws-amplify/auth";
+import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 
 const initialState: CreatePostInput = { title: "" };
 const client = generateClient();
 
-// type AppProps = {
-//   signOut?: UseAuthenticator["signOut"]; //() => void;
-//   user?: AuthUser;
-// };
+type AppProps = {
+  signOut?: UseAuthenticator["signOut"]; //() => void;
+  user?: AuthUser;
+};
 
-// const App: React.FC<AppProps> = ({ signOut, user }) => {
-const App = () => {
+const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
   const [posts, setPosts] = useState<Post[]>([]);
 
@@ -67,12 +65,13 @@ const App = () => {
 
   return (
     <div style={styles.container}>
-      {/* <Heading level={1}>
-        Hello
+      <Heading level={1}>
+        Hello{" "}
         {user?.username &&
           user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+        {"!"}
       </Heading>
-      <Button onClick={signOut}>Sign out</Button> */}
+      <Button onClick={signOut}>Sign out</Button>
       <h2>Amplify Blog Posts</h2>
       <input
         onChange={(event) =>
@@ -121,7 +120,5 @@ const styles = {
   },
 } as const;
 
-export default App;
-
-// const AuthenticatedApp = withAuthenticator(App);
-// export default AuthenticatedApp;
+const AuthenticatedApp = withAuthenticator(App);
+export default AuthenticatedApp;

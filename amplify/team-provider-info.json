@@ -9,11 +9,30 @@
       "UnauthRoleName": "amplify-snap-dev-141323-unauthRole",
       "StackName": "amplify-snap-dev-141323",
       "StackId": "arn:aws:cloudformation:us-west-1:975050304471:stack/amplify-snap-dev-141323/55bd44c0-e56c-11ee-8289-02ee6686a3f3",
-      "AmplifyAppId": "d204rhuo42mqgv"
+      "AmplifyAppId": "d204rhuo42mqgv",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-snap-dev-141323-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "api": {
         "snap": {}
+      },
+      "auth": {
+        "snapb5547b8d": {}
+      },
+      "function": {
+        "snapb5547b8dDefineAuthChallenge": {
+          "deploymentBucketName": "amplify-snap-dev-141323-deployment",
+          "s3Key": "amplify-builds/snapb5547b8dDefineAuthChallenge-304442434851696f7078-build.zip"
+        },
+        "snapb5547b8dCreateAuthChallenge": {
+          "deploymentBucketName": "amplify-snap-dev-141323-deployment",
+          "s3Key": "amplify-builds/snapb5547b8dCreateAuthChallenge-3579764859774450414f-build.zip"
+        },
+        "snapb5547b8dVerifyAuthChallengeResponse": {
+          "RECAPTCHASECRET": "6LfJSpopAAAAACuCjwhHTCDFgEb_gY_jWOWm9lVB",
+          "deploymentBucketName": "amplify-snap-dev-141323-deployment",
+          "s3Key": "amplify-builds/snapb5547b8dVerifyAuthChallengeResponse-2f706569447765537954-build.zip"
+        }
       }
     }
   }
