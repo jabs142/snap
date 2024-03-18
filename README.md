@@ -6,13 +6,14 @@ Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify
 
 ## 💻 Technologies & Tools Used
 
-![](https://skills.thijs.gg/icons?i=react,vite,js,html,css,figma,graphql,aws,dynamodb,git,github)
+![](https://skills.thijs.gg/icons?i=react,vite,js,ts,html,css,figma,graphql,aws,dynamodb,git,github)
 
 ### Frontend Development:
 - React 
 - Vite
 - HTML
 - CSS
+- Typescript
 - JavaScript 
 - Figma: Figma-to-code
 
