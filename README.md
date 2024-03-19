@@ -1,6 +1,6 @@
 # 📷 Snap
 
-Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify 
+(Work in progress) Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify 
 
 <br>
 
@@ -37,7 +37,7 @@ Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify
 
 
 ## 💻 Concept 
-Real-time photo sharing web application. More description to come.
+Real-time photo sharing web application.
 
 <br>
 
@@ -50,13 +50,13 @@ Real-time photo sharing web application. More description to come.
 
 2) Real-Time Capabilities: GraphQL was an ideal choice for real-time data processing and synchronization, due to its efficient data fetching capabilities. Combined with AWS AppSync, I could effortlessly build real-time applications that provide instant updates to users.
 
-3) Scalability and Flexibility: By leveraging AWS cloud services such as AppSync, DynamoDB, and S3, I was able to ensure scalability and flexibility in our application architecture. These services offer managed solutions for data storage, authentication, and serverless functions, allowing us to focus on building features rather than managing infrastructure.
+3) Scalability and Flexibility: By leveraging AWS cloud services such as AppSync, DynamoDB, and S3, I was able to ensure scalability and flexibility in our application architecture. These services offer managed solutions for data storage, authentication, and serverless functions.
 
 4) Serverless Architecture: AWS Amplify enabled me to adopt a serverless architecture, eliminating the need for provisioning and managing servers. Should the project scale, this approach would reduce operational overhead and infrastructure costs, while ensuring high availability and scalability.
 
-5) Authentication and Authorization: Amazon Cognito provided robust authentication and authorization mechanisms, ensuring secure access to our application's resources. It also has features like multi-factor authentication and user pool management.
+5) Authentication and Authorization: Amazon Cognito provided robust authentication and authorization mechanisms. It also has features like multi-factor authentication and user pool management.
 
-6) Modern Frontend Development: I opted for React as our frontend framework due to its popularity, robust ecosystem, and component-based architecture. Vite was chosen as our build tool for its speed and modern development features, enhancing our frontend development experience.
+6) Modern Frontend Development: I opted for React as the frontend framework due to its popularity, robust ecosystem, and component-based architecture.
 
 
 ### General idea:
@@ -78,12 +78,14 @@ Real-time photo sharing web application. More description to come.
   <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/CreateNewGroup.gif?raw=true">
 </p> -->
 * Posts should be updated in real time
+* Users should be able to 'like' other users' posts 
 
 <br> 
 
 
 ## 🎈 Future Improvements
 <ol>
+    <li>Users should be able to comment on other users' posts  </li>
     <li>Users should be able to set their profile pictures  </li>
     <li>Users should be able to change their profile settings  </li>
 </ol>
