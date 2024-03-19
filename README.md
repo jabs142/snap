@@ -6,7 +6,7 @@ Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify
 
 ## 💻 Technologies & Tools Used
 
-![](https://skills.thijs.gg/icons?i=react,vite,js,ts,html,css,figma,graphql,aws,dynamodb,git,github)
+![](https://skills.thijs.gg/icons?i=react,vite,js,ts,html,css,figma,materialui,graphql,aws,dynamodb,git,github)
 
 ### Frontend Development:
 - React 
@@ -15,6 +15,7 @@ Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify
 - CSS
 - Typescript
 - JavaScript 
+- MaterialUI
 - Figma: Figma-to-code
 
 ### Backend Development:

@@ -3,24 +3,11 @@
 input AMPLIFY {
   globalAuthRule: AuthRule = { allow: public }
 } # FOR TESTING ONLY!
-type Blog @model {
-  id: ID!
-  name: String!
-  posts: [Post] @hasMany
-}
-
 type Post @model {
   id: ID!
   title: String!
   content: String
   filePath: String
   like: Int!
-  blog: Blog @belongsTo
-  comments: [Comment] @hasMany
-}
-
-type Comment @model {
-  id: ID!
-  post: Post @belongsTo
-  content: String!
+  owner: String
 }
