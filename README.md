@@ -1,4 +1,4 @@
-# 📷 Snap
+# 📷 SnapCloud
 
 (Work in progress) Deployed [here](https://dev.d204rhuo42mqgv.amplifyapp.com) using AWS Amplify 
 
@@ -89,5 +89,6 @@ Real-time photo sharing web application.
     <li>Users should be able to set their profile pictures  </li>
     <li>Users should be able to change their profile settings  </li>
 </ol>
+
 
 

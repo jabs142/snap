@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import { createPost, updatePost } from "./graphql/mutations";
+// import {deletePost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
 import { type CreatePostInput, type Post } from "./API";
-import { withAuthenticator, Button, Heading } from "@aws-amplify/ui-react";
+import { uploadData, getUrl } from "aws-amplify/storage";
+// import {  remove } from "aws-amplify/storage";
+import {
+  withAuthenticator,
+  Button,
+  Heading,
+  Image,
+} from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { type AuthUser } from "aws-amplify/auth";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
@@ -27,6 +35,7 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
+  const [imageData, setImageData] = useState<string>("");
 
   useEffect(() => {
     fetchPosts();
@@ -38,6 +47,15 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         query: listPosts,
       });
       const posts = postData.data.listPosts.items;
+      await Promise.all(
+        posts.map(async (post) => {
+          if (post.filePath) {
+            const urlResult = await getUrl({ key: post.title });
+            post.filePath = urlResult.url.toString();
+          }
+          return post;
+        })
+      );
       setPosts(posts);
     } catch (err) {
       console.log("error fetching posts");
@@ -50,16 +68,40 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       const post = { ...formState };
       setPosts([...posts, post]);
       setFormState(initialState);
-      await client.graphql({
+      const result = await client.graphql({
         query: createPost,
         variables: {
           input: post,
         },
       });
+
+      // if (formState.filePath) {
+      if (imageData) {
+        await uploadData({
+          key: result.data.createPost.id,
+          // data: formState.filePath,
+          data: imageData,
+        }).result;
+      }
     } catch (err) {
       console.log("error creating post:", err);
     }
   }
+
+  // TODO: Implement remove post functionality
+  // async function removePost(id: string) {
+  //   try {
+  //     const newPosts = posts.filter((post) => post.id !== id);
+  //     setPosts(newPosts);
+  //     await remove({ key: id });
+  //     await client.graphql({
+  //       query: deletePost,
+  //       variables: { input: { id } },
+  //     });
+  //   } catch (err) {
+  //     console.log("error deleting post:", err);
+  //   }
+  // }
 
   async function addLike(index: number) {
     try {
@@ -96,6 +138,23 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
 
+  // TODO: Fix error in displaying image file
+  // Function to handle file input change
+  const handleFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setImageData(reader.result);
+        }
+      };
+      reader.readAsDataURL(file); // Convert file to data URL
+    }
+  };
+
   return (
     <div style={styles.container}>
       <Heading level={1}>
@@ -122,6 +181,12 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         value={formState.content ?? ""}
         placeholder="Content"
       />
+      <input
+        type="file"
+        accept="image/jpeg, image/png, image/gif"
+        onChange={handleFileInputChange}
+      />
+
       <button style={styles.button} onClick={addPost}>
         Create Post
       </button>
@@ -134,6 +199,13 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         >
           <p style={styles.postName}>{post.title}</p>
           <p>{post.content}</p>
+          {post.filePath && (
+            <Image
+              src={post.filePath}
+              style={{ width: 200 }}
+              alt={`Image for ${post.title}`}
+            />
+          )}
           <div>
             <IconButton onClick={() => addLike(index)}>
               <FavoriteBorderIcon />

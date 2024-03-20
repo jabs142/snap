@@ -39,6 +39,9 @@
           "appId": "d204rhuo42mqgv",
           "type": "manual"
         }
+      },
+      "storage": {
+        "snapStorage": {}
       }
     }
   }

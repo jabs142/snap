@@ -168,5 +168,12 @@
         }
       ]
     }
+  },
+  "storage": {
+    "snapStorage": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
   }
 }
