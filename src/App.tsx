@@ -17,7 +17,7 @@ import { type AuthUser } from "aws-amplify/auth";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import Paper from "@mui/material/Paper";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-// import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { IconButton } from "@mui/material";
 
 const initialState: CreatePostInput = {
@@ -36,6 +36,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
   const [imageData, setImageData] = useState<string>("");
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -155,6 +156,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   };
 
+  // TODO: Fix onMouseEnter bug - currently all like buttons hover at the same time (not index specific)
   return (
     <div style={styles.container}>
       <Heading level={1}>
@@ -207,8 +209,12 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             />
           )}
           <div>
-            <IconButton onClick={() => addLike(index)}>
-              <FavoriteBorderIcon />
+            <IconButton
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              onClick={() => addLike(index)}
+            >
+              {hovered ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
             <p>{post.like}</p>
           </div>
