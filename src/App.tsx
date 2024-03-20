@@ -36,7 +36,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
   const [imageData, setImageData] = useState<string>("");
-  const [hovered, setHovered] = useState(false);
+  const [hoveredButtons, setHoveredButtons] = useState<boolean[]>([]);
 
   useEffect(() => {
     fetchPosts();
@@ -156,7 +156,18 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   };
 
-  // TODO: Fix onMouseEnter bug - currently all like buttons hover at the same time (not index specific)
+  const handleMouseEnter = (index: number) => {
+    const updatedHoveredButtons = [...hoveredButtons];
+    updatedHoveredButtons[index] = true;
+    setHoveredButtons(updatedHoveredButtons);
+  };
+
+  const handleMouseLeave = (index: number) => {
+    const updatedHoveredButtons = [...hoveredButtons];
+    updatedHoveredButtons[index] = false;
+    setHoveredButtons(updatedHoveredButtons);
+  };
+
   return (
     <div style={styles.container}>
       <Heading level={1}>
@@ -210,11 +221,15 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
           )}
           <div>
             <IconButton
-              onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={() => handleMouseLeave(index)}
               onClick={() => addLike(index)}
             >
-              {hovered ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              {hoveredButtons[index] ? (
+                <FavoriteIcon />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
             </IconButton>
             <p>{post.like}</p>
           </div>
