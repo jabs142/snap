@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
-import { createPost, updatePost } from "./graphql/mutations";
-// import {deletePost } from "./graphql/mutations";
+import { createPost, updatePost, deletePost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
 import { type CreatePostInput, type Post } from "./API";
-import { uploadData, getUrl } from "aws-amplify/storage";
-// import {  remove } from "aws-amplify/storage";
+import { uploadData, getUrl, remove } from "aws-amplify/storage";
 import {
   withAuthenticator,
   Button,
@@ -14,11 +12,13 @@ import {
 } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { type AuthUser } from "aws-amplify/auth";
+
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import Paper from "@mui/material/Paper";
+import { IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { IconButton } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const initialState: CreatePostInput = {
   title: "",
@@ -89,20 +89,22 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
 
-  // TODO: Implement remove post functionality
-  // async function removePost(id: string) {
-  //   try {
-  //     const newPosts = posts.filter((post) => post.id !== id);
-  //     setPosts(newPosts);
-  //     await remove({ key: id });
-  //     await client.graphql({
-  //       query: deletePost,
-  //       variables: { input: { id } },
-  //     });
-  //   } catch (err) {
-  //     console.log("error deleting post:", err);
-  //   }
-  // }
+  async function removePost(id: string | null | undefined) {
+    try {
+      if (!id) {
+        return;
+      }
+      const newPosts = posts.filter((post) => post.id !== id);
+      setPosts(newPosts);
+      await remove({ key: id });
+      await client.graphql({
+        query: deletePost,
+        variables: { input: { id } },
+      });
+    } catch (err) {
+      console.log("error deleting post:", err);
+    }
+  }
 
   async function addLike(index: number) {
     try {
@@ -233,6 +235,9 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             </IconButton>
             <p>{post.like}</p>
           </div>
+          <IconButton onClick={() => removePost(post.id)}>
+            <ClearIcon />
+          </IconButton>
         </Paper>
       ))}
     </div>
