@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import { createPost, updatePost, deletePost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
@@ -37,6 +37,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
   const [hoveredButtons, setHoveredButtons] = useState<boolean[]>([]);
   const [fileData, setFileData] = useState<File | undefined>();
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -86,6 +87,10 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
 
       fetchPosts();
       setFormState(initialState);
+      setFileData(undefined);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     } catch (err) {
       console.log("error creating post:", err);
     }
@@ -204,11 +209,13 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         value={formState.content ?? ""}
         placeholder="Content"
       />
-      <input
-        type="file"
-        accept="image/jpeg, image/png, image/gif"
-        onChange={handleFileInputChange}
-      />
+      <form ref={formRef}>
+        <input
+          type="file"
+          accept="image/jpeg, image/png, image/gif"
+          onChange={handleFileInputChange}
+        />
+      </form>
 
       <button style={styles.button} onClick={addPost}>
         Create Post
