@@ -35,8 +35,8 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
-  const [imageData, setImageData] = useState<string>("");
   const [hoveredButtons, setHoveredButtons] = useState<boolean[]>([]);
+  const [fileData, setFileData] = useState<File | undefined>();
 
   useEffect(() => {
     fetchPosts();
@@ -48,11 +48,12 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         query: listPosts,
       });
       const posts = postData.data.listPosts.items;
+      console.log("Posts", posts);
       await Promise.all(
         posts.map(async (post) => {
           if (post.filePath) {
-            const urlResult = await getUrl({ key: post.title });
-            post.filePath = urlResult.url.toString();
+            const imageUrl = await getUrl({ key: post.filePath });
+            post.filePath = imageUrl.url.href;
           }
           return post;
         })
@@ -67,23 +68,24 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     try {
       if (!formState.content || !formState.title) return;
       const post = { ...formState };
-      setPosts([...posts, post]);
-      setFormState(initialState);
-      const result = await client.graphql({
+
+      await client.graphql({
         query: createPost,
         variables: {
           input: post,
         },
       });
 
-      // if (formState.filePath) {
-      if (imageData) {
+      if (formState.filePath && fileData) {
         await uploadData({
-          key: result.data.createPost.id,
-          // data: formState.filePath,
-          data: imageData,
+          key: formState.filePath,
+          data: fileData,
         }).result;
+        post.filePath = formState.filePath;
       }
+
+      fetchPosts();
+      setFormState(initialState);
     } catch (err) {
       console.log("error creating post:", err);
     }
@@ -106,16 +108,25 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
 
+  // Add a check for the id property before calling addLike
+  async function handleLike(index: number) {
+    const post = posts[index];
+    if (post.id) {
+      addLike(index);
+    } else {
+      console.log("Cannot like post with undefined id");
+    }
+  }
+
   async function addLike(index: number) {
     try {
       const postToUpdate = posts[index];
       const updatedPost = { ...postToUpdate };
 
-      // Perform the update operation, for example, incrementing the 'like' count
-      updatedPost.like = updatedPost.like + 1;
-
       // Ensure that the id is defined before proceeding
       if (updatedPost.id) {
+        // Perform the update operation, for example, incrementing the 'like' count
+        updatedPost.like = updatedPost.like + 1;
         // Extract only the fields required for update from the updatedPost object
         const input = {
           id: updatedPost.id,
@@ -132,6 +143,8 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         // Update the posts array with the updated post
         const updatedPosts = [...posts];
         updatedPosts[index] = postData.data.updatePost;
+        // Ensure that the filePath is preserved
+        updatedPosts[index].filePath = postToUpdate.filePath;
         setPosts(updatedPosts);
       } else {
         console.log("Error: Cannot update post with undefined id");
@@ -141,20 +154,15 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
 
-  // TODO: Fix error in displaying image file
-  // Function to handle file input change
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log("file", file);
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setImageData(reader.result);
-        }
-      };
-      reader.readAsDataURL(file); // Convert file to data URL
+      setFileData(file);
+      setFormState({
+        ...formState,
+        filePath: file.name,
+      });
     }
   };
 
@@ -217,7 +225,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
           {post.filePath && (
             <Image
               src={post.filePath}
-              style={{ width: 200 }}
+              style={{ width: 200, display: "block", margin: "auto" }}
               alt={`Image for ${post.title}`}
             />
           )}
@@ -225,7 +233,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             <IconButton
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
-              onClick={() => addLike(index)}
+              onClick={() => handleLike(index)}
             >
               {hoveredButtons[index] ? (
                 <FavoriteIcon />
