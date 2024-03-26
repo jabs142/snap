@@ -9,6 +9,7 @@ import {
   Button,
   Heading,
   Image,
+  Alert,
 } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { type AuthUser } from "aws-amplify/auth";
@@ -37,6 +38,8 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
   const [hoveredButtons, setHoveredButtons] = useState<boolean[]>([]);
   const [fileData, setFileData] = useState<File | undefined>();
+  const [addPostSuccessful, setAddPostSuccessful] = useState(false);
+  const [removePostSuccessful, setRemovePostSuccessful] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -91,6 +94,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       if (formRef.current) {
         formRef.current.reset();
       }
+      setAddPostSuccessful(true);
     } catch (err) {
       console.log("error creating post:", err);
     }
@@ -108,6 +112,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         query: deletePost,
         variables: { input: { id } },
       });
+      setRemovePostSuccessful(true);
     } catch (err) {
       console.log("error deleting post:", err);
     }
@@ -220,6 +225,29 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       <button style={styles.button} onClick={addPost}>
         Create Post
       </button>
+      {addPostSuccessful && (
+        <Alert
+          variation="success"
+          isDismissible={true}
+          onDismiss={() => setAddPostSuccessful(false)}
+          hasIcon={true}
+          heading="Hooray!"
+        >
+          Successfully added post
+        </Alert>
+      )}
+      {removePostSuccessful && (
+        <Alert
+          variation="success"
+          isDismissible={true}
+          onDismiss={() => setRemovePostSuccessful(false)}
+          hasIcon={true}
+          heading="Hooray!"
+        >
+          Successfully removed post
+        </Alert>
+      )}
+
       {posts.map((post, index) => (
         <Paper
           variant="outlined"
