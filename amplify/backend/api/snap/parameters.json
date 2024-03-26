@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "snap",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "APIKeyExpirationEpoch": 4070924400
 }
