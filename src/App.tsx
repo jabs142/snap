@@ -4,16 +4,9 @@ import { createPost, updatePost, deletePost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
 import { type CreatePostInput, type Post } from "./API";
 import { uploadData, getUrl, remove } from "aws-amplify/storage";
-import {
-  withAuthenticator,
-  Button,
-  Heading,
-  Image,
-  Alert,
-} from "@aws-amplify/ui-react";
+import { withAuthenticator, Image, Alert, Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { type AuthUser } from "aws-amplify/auth";
-
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
@@ -22,7 +15,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./App.css";
 import HeaderBanner from "./components/HeaderBanner/HeaderBanner";
-import NavBar from "./components/NavBar/NavBar";
+import FooterBanner from "./components/FooterBanner/FooterBanner";
 
 const initialState: CreatePostInput = {
   title: "",
@@ -48,6 +41,25 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  // Function to show the Alert for 3 seconds and then hide it
+  useEffect(() => {
+    if (addPostSuccessful) {
+      const timer = setTimeout(() => {
+        setAddPostSuccessful(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [addPostSuccessful]);
+
+  useEffect(() => {
+    if (removePostSuccessful) {
+      const timer = setTimeout(() => {
+        setRemovePostSuccessful(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [removePostSuccessful]);
 
   async function fetchPosts() {
     try {
@@ -191,29 +203,25 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     setHoveredButtons(updatedHoveredButtons);
   };
 
-  const handleClick = () => {
-    console.log("Should redirect to form page");
-  };
-
   return (
     <div>
-      <NavBar />
+      {/* <NavBar /> */}
       <HeaderBanner
         heading="SnapCloud ☁️"
         subHeading="Connecting people, creating memories"
-        buttonText="Get Started"
-        onClick={handleClick}
+        user={user?.username}
+        onClick={signOut}
       />
-
-      <div style={styles.container}>
-        <Heading level={1}>
-          Hello{" "}
-          {user?.username &&
-            user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-          {"!"}
-        </Heading>
-        <Button onClick={signOut}>Sign out</Button>
-        <h2>Amplify Blog Posts</h2>
+      <Button
+        variation="primary"
+        marginTop="30px"
+        padding="20px"
+        borderRadius="10px"
+      >
+        Create a memory
+      </Button>
+      <div style={styles.form}>
+        <h2>Create a memory</h2>
         <input
           onChange={(event) =>
             setFormState({ ...formState, title: event.target.value })
@@ -242,28 +250,37 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
           Create Post
         </button>
         {addPostSuccessful && (
-          <Alert
-            variation="success"
-            isDismissible={true}
-            onDismiss={() => setAddPostSuccessful(false)}
-            hasIcon={true}
-            heading="Hooray!"
-          >
-            Successfully added post
-          </Alert>
+          <div className="fade-out">
+            <Alert
+              variation="success"
+              isDismissible={true}
+              onDismiss={() => setAddPostSuccessful(false)}
+              hasIcon={true}
+              heading="Hooray!"
+              style={{
+                opacity: addPostSuccessful ? 1 : 0, // Start with full opacity when addPostSuccessful is true
+                transition: "opacity 5s linear", // Fade out over 5 seconds linearly
+              }}
+            >
+              Successfully added post
+            </Alert>
+          </div>
         )}
         {removePostSuccessful && (
-          <Alert
-            variation="success"
-            isDismissible={true}
-            onDismiss={() => setRemovePostSuccessful(false)}
-            hasIcon={true}
-            heading="Hooray!"
-          >
-            Successfully removed post
-          </Alert>
+          <div className="fade-out">
+            <Alert
+              variation="success"
+              isDismissible={true}
+              onDismiss={() => setRemovePostSuccessful(false)}
+              hasIcon={true}
+              heading="Hooray!"
+            >
+              Successfully removed post
+            </Alert>
+          </div>
         )}
-
+      </div>
+      <div style={styles.container}>
         {posts.map((post, index) => (
           <Paper
             variant="outlined"
@@ -300,12 +317,20 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
           </Paper>
         ))}
       </div>
+      <FooterBanner />
     </div>
   );
 };
 
 const styles = {
   container: {
+    width: "90%", // Stretch across 90% of the width of the page
+    margin: "0 auto", // Center the container horizontally
+    display: "grid", // Use grid layout for arranging posts
+    gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))", // Responsive grid with minimum column width of 400px
+    gap: 5, // Add gap between grid items
+  },
+  form: {
     width: "400px",
     margin: "0 auto",
     display: "flex",
@@ -313,7 +338,11 @@ const styles = {
     justifyContent: "center",
     padding: 20,
   },
-  post: { marginBottom: 15 },
+  post: {
+    padding: 5,
+    margin: 5,
+  },
+
   input: {
     border: "none",
     backgroundColor: "#ddd",
@@ -323,11 +352,13 @@ const styles = {
   },
   postName: { fontSize: 20, fontWeight: "bold" },
   button: {
-    backgroundColor: "black",
+    backgroundColor: "grey",
     color: "white",
-    outline: "none",
     fontSize: 18,
-    padding: "12px 0px",
+    padding: "12px 20px",
+    borderRadius: 10,
+    cursor: "pointer",
+    transition: "background-color 0.3s, box-shadow 0.3s",
   },
 } as const;
 
