@@ -25,12 +25,13 @@ const initialState: CreatePostInput = {
 const client = generateClient();
 
 type AppProps = {
-  signOut?: UseAuthenticator["signOut"]; //() => void;
+  signOut?: UseAuthenticator["signOut"];
   user?: AuthUser;
 };
 
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
+  const [showForm, setShowForm] = useState(false);
   const [posts, setPosts] = useState<Post[] | CreatePostInput[]>([]);
   const [hoveredButtons, setHoveredButtons] = useState<boolean[]>([]);
   const [fileData, setFileData] = useState<File | undefined>();
@@ -109,6 +110,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       if (formRef.current) {
         formRef.current.reset();
       }
+      setShowForm(false);
       setAddPostSuccessful(true);
     } catch (err) {
       console.log("error creating post:", err);
@@ -205,7 +207,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
 
   return (
     <div>
-      {/* <NavBar /> */}
       <HeaderBanner
         heading="SnapCloud ☁️"
         subHeading="Connecting people, creating memories"
@@ -217,57 +218,31 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         marginTop="30px"
         padding="20px"
         borderRadius="10px"
+        onClick={() => setShowForm(!showForm)}
+        marginBottom="30px"
       >
         Create a memory
       </Button>
-      <div style={styles.form}>
-        <h2>Create a memory</h2>
-        <input
-          onChange={(event) =>
-            setFormState({ ...formState, title: event.target.value })
-          }
-          style={styles.input}
-          value={formState.title}
-          placeholder="Title"
-        />
-        <input
-          onChange={(event) =>
-            setFormState({ ...formState, content: event.target.value })
-          }
-          style={styles.input}
-          value={formState.content ?? ""}
-          placeholder="Content"
-        />
-        <form ref={formRef}>
-          <input
-            type="file"
-            accept="image/jpeg, image/png, image/gif"
-            onChange={handleFileInputChange}
-          />
-        </form>
-
-        <button style={styles.button} onClick={addPost}>
-          Create Post
-        </button>
-        {addPostSuccessful && (
-          <div className="fade-out">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ width: "400px" }}>
+          {addPostSuccessful && (
             <Alert
               variation="success"
               isDismissible={true}
               onDismiss={() => setAddPostSuccessful(false)}
               hasIcon={true}
               heading="Hooray!"
-              style={{
-                opacity: addPostSuccessful ? 1 : 0, // Start with full opacity when addPostSuccessful is true
-                transition: "opacity 5s linear", // Fade out over 5 seconds linearly
-              }}
             >
               Successfully added post
             </Alert>
-          </div>
-        )}
-        {removePostSuccessful && (
-          <div className="fade-out">
+          )}
+          {removePostSuccessful && (
             <Alert
               variation="success"
               isDismissible={true}
@@ -277,9 +252,40 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             >
               Successfully removed post
             </Alert>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+      {showForm && (
+        <div style={styles.form}>
+          <input
+            onChange={(event) =>
+              setFormState({ ...formState, title: event.target.value })
+            }
+            style={styles.titleInput}
+            value={formState.title}
+            placeholder="Title"
+          />
+          <input
+            onChange={(event) =>
+              setFormState({ ...formState, content: event.target.value })
+            }
+            style={styles.contentInput}
+            value={formState.content ?? ""}
+            placeholder="Content"
+          />
+          <form ref={formRef}>
+            <input
+              type="file"
+              accept="image/jpeg, image/png, image/gif"
+              onChange={handleFileInputChange}
+            />
+          </form>
+          <button style={styles.button} onClick={addPost}>
+            Create Post
+          </button>
+        </div>
+      )}
+
       <div style={styles.container}>
         {posts.map((post, index) => (
           <Paper
@@ -288,35 +294,55 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             key={post.id ? post.id : index}
             style={styles.post}
           >
-            <p style={styles.postName}>{post.title}</p>
-            <p>{post.content}</p>
-            {post.filePath && (
-              <Image
-                src={post.filePath}
-                style={{ width: 200, display: "block", margin: "auto" }}
-                alt={`Image for ${post.title}`}
-              />
-            )}
-            <div>
-              <IconButton
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={() => handleMouseLeave(index)}
-                onClick={() => handleLike(index)}
-              >
-                {hoveredButtons[index] ? (
-                  <FavoriteIcon />
-                ) : (
-                  <FavoriteBorderIcon />
-                )}
-              </IconButton>
-              <p>{post.like}</p>
+            <div style={styles.imageContainer}>
+              {post.filePath && (
+                <Image
+                  src={post.filePath}
+                  style={{
+                    width: 150,
+                  }}
+                  alt={`Image for ${post.title}`}
+                />
+              )}
             </div>
-            <IconButton onClick={() => removePost(post.id)}>
-              <ClearIcon />
-            </IconButton>
+            <p style={styles.title}>{post.title}</p>
+            <p style={styles.content}>{post.content}</p>
+            <div style={styles.likeContainer}>
+              <div style={styles.likeInfo}>
+                <IconButton
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={() => handleMouseLeave(index)}
+                  onClick={() => handleLike(index)}
+                >
+                  {hoveredButtons[index] ? (
+                    <FavoriteIcon />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )}
+                </IconButton>
+                <p>{post.like}</p>
+              </div>
+              <IconButton
+                onClick={() => removePost(post.id)}
+                style={styles.deleteButton}
+              >
+                <ClearIcon />
+              </IconButton>
+            </div>
           </Paper>
         ))}
       </div>
+      {posts.length <= 0 && (
+        <div className="centeredContainer">
+          <img
+            src="public/images/nopost.png"
+            alt="No Posts"
+            className="centeredImage"
+            style={{ width: "400px", height: "400px", marginRight: "8px" }}
+          />
+        </div>
+      )}
+
       <FooterBanner />
     </div>
   );
@@ -324,12 +350,23 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
 
 const styles = {
   container: {
-    width: "90%", // Stretch across 90% of the width of the page
-    margin: "0 auto", // Center the container horizontally
-    display: "grid", // Use grid layout for arranging posts
-    gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))", // Responsive grid with minimum column width of 400px
-    gap: 5, // Add gap between grid items
+    width: "80%",
+    margin: "0 auto",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+    gap: 5,
   },
+  centeredContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+  },
+  centeredImage: {
+    width: "100%",
+    maxHeight: "100%",
+  },
+
   form: {
     width: "400px",
     margin: "0 auto",
@@ -339,26 +376,81 @@ const styles = {
     padding: 20,
   },
   post: {
+    width: 350,
+    height: 350,
     padding: 5,
     margin: 5,
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
   },
-
-  input: {
+  imageContainer: {
+    height: "70%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  image: {
+    maxWidth: "100%",
+    maxHeight: "100%",
+  },
+  titleInput: {
     border: "none",
     backgroundColor: "#ddd",
     marginBottom: 10,
     padding: 8,
-    fontSize: 18,
+    fontSize: 16,
+  },
+  contentInput: {
+    border: "none",
+    backgroundColor: "#ddd",
+    marginBottom: 20,
+    padding: 8,
+    fontSize: 16,
+  },
+  title: {
+    height: "9%",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    marginTop: 5,
+  },
+  content: {
+    height: "25%",
+    overflowY: "auto",
+  },
+  likeContainer: {
+    height: "10%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "calc(100% - 30px)",
+    padding: "5px 10px",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+  },
+  likeInfo: {
+    display: "flex",
+    alignItems: "center",
+  },
+  deleteButton: {
+    position: "absolute",
+    bottom: 5,
+    right: 5,
   },
   postName: { fontSize: 20, fontWeight: "bold" },
   button: {
-    backgroundColor: "grey",
+    backgroundColor: "#047895",
     color: "white",
     fontSize: 18,
     padding: "12px 20px",
     borderRadius: 10,
     cursor: "pointer",
     transition: "background-color 0.3s, box-shadow 0.3s",
+    marginTop: "20px",
   },
 } as const;
 

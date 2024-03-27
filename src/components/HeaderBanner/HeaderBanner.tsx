@@ -1,12 +1,12 @@
 import React from "react";
-import { Flex, Text, Button } from "@aws-amplify/ui-react"; // Import necessary UI components
+import { Flex, Text, Button } from "@aws-amplify/ui-react";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 
 type HeaderBannerProps = {
   heading: string;
   subHeading: string;
   user: string | undefined;
-  onClick?: UseAuthenticator["signOut"]; //() => void;
+  onClick?: UseAuthenticator["signOut"];
 };
 
 const HeaderBanner: React.FC<HeaderBannerProps> = ({
@@ -29,14 +29,16 @@ const HeaderBanner: React.FC<HeaderBannerProps> = ({
           style={{ display: "flex", alignItems: "center" }}
         >
           <img
-            src="dist/images/avatarplaceholder.png"
+            src="public/images/avatarplaceholder.png"
             alt="Avatar"
             style={{ width: "24px", height: "24px", marginRight: "8px" }}
           />
           Hello {user && user.charAt(0).toUpperCase() + user.slice(1)}
           {"!"}
         </Button>
-        <Button onClick={onClick}>Sign out</Button>
+        <Button onClick={onClick} style={{ marginRight: "20px" }}>
+          Sign out
+        </Button>
       </Flex>
       <Flex
         direction="column"
@@ -51,8 +53,6 @@ const HeaderBanner: React.FC<HeaderBannerProps> = ({
         <Text fontSize="16px" color="#666" marginBottom="20px">
           {subHeading}
         </Text>
-        {/* 
-        <Button onClick={onClick}>{buttonText}</Button> */}
       </Flex>
     </div>
   );
