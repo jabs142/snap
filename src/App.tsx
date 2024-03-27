@@ -21,6 +21,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./App.css";
+import HeaderBanner from "./components/HeaderBanner/HeaderBanner";
+import NavBar from "./components/NavBar/NavBar";
 
 const initialState: CreatePostInput = {
   title: "",
@@ -189,101 +191,115 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     setHoveredButtons(updatedHoveredButtons);
   };
 
+  const handleClick = () => {
+    console.log("Should redirect to form page");
+  };
+
   return (
-    <div style={styles.container}>
-      <Heading level={1}>
-        Hello{" "}
-        {user?.username &&
-          user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-        {"!"}
-      </Heading>
-      <Button onClick={signOut}>Sign out</Button>
-      <h2>Amplify Blog Posts</h2>
-      <input
-        onChange={(event) =>
-          setFormState({ ...formState, title: event.target.value })
-        }
-        style={styles.input}
-        value={formState.title}
-        placeholder="Title"
+    <div>
+      <NavBar />
+      <HeaderBanner
+        heading="SnapCloud ☁️"
+        subHeading="Connecting people, creating memories"
+        buttonText="Get Started"
+        onClick={handleClick}
       />
-      <input
-        onChange={(event) =>
-          setFormState({ ...formState, content: event.target.value })
-        }
-        style={styles.input}
-        value={formState.content ?? ""}
-        placeholder="Content"
-      />
-      <form ref={formRef}>
+
+      <div style={styles.container}>
+        <Heading level={1}>
+          Hello{" "}
+          {user?.username &&
+            user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+          {"!"}
+        </Heading>
+        <Button onClick={signOut}>Sign out</Button>
+        <h2>Amplify Blog Posts</h2>
         <input
-          type="file"
-          accept="image/jpeg, image/png, image/gif"
-          onChange={handleFileInputChange}
+          onChange={(event) =>
+            setFormState({ ...formState, title: event.target.value })
+          }
+          style={styles.input}
+          value={formState.title}
+          placeholder="Title"
         />
-      </form>
+        <input
+          onChange={(event) =>
+            setFormState({ ...formState, content: event.target.value })
+          }
+          style={styles.input}
+          value={formState.content ?? ""}
+          placeholder="Content"
+        />
+        <form ref={formRef}>
+          <input
+            type="file"
+            accept="image/jpeg, image/png, image/gif"
+            onChange={handleFileInputChange}
+          />
+        </form>
 
-      <button style={styles.button} onClick={addPost}>
-        Create Post
-      </button>
-      {addPostSuccessful && (
-        <Alert
-          variation="success"
-          isDismissible={true}
-          onDismiss={() => setAddPostSuccessful(false)}
-          hasIcon={true}
-          heading="Hooray!"
-        >
-          Successfully added post
-        </Alert>
-      )}
-      {removePostSuccessful && (
-        <Alert
-          variation="success"
-          isDismissible={true}
-          onDismiss={() => setRemovePostSuccessful(false)}
-          hasIcon={true}
-          heading="Hooray!"
-        >
-          Successfully removed post
-        </Alert>
-      )}
+        <button style={styles.button} onClick={addPost}>
+          Create Post
+        </button>
+        {addPostSuccessful && (
+          <Alert
+            variation="success"
+            isDismissible={true}
+            onDismiss={() => setAddPostSuccessful(false)}
+            hasIcon={true}
+            heading="Hooray!"
+          >
+            Successfully added post
+          </Alert>
+        )}
+        {removePostSuccessful && (
+          <Alert
+            variation="success"
+            isDismissible={true}
+            onDismiss={() => setRemovePostSuccessful(false)}
+            hasIcon={true}
+            heading="Hooray!"
+          >
+            Successfully removed post
+          </Alert>
+        )}
 
-      {posts.map((post, index) => (
-        <Paper
-          variant="outlined"
-          square={false}
-          key={post.id ? post.id : index}
-          style={styles.post}
-        >
-          <p style={styles.postName}>{post.title}</p>
-          <p>{post.content}</p>
-          {post.filePath && (
-            <Image
-              src={post.filePath}
-              style={{ width: 200, display: "block", margin: "auto" }}
-              alt={`Image for ${post.title}`}
-            />
-          )}
-          <div>
-            <IconButton
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={() => handleMouseLeave(index)}
-              onClick={() => handleLike(index)}
-            >
-              {hoveredButtons[index] ? (
-                <FavoriteIcon />
-              ) : (
-                <FavoriteBorderIcon />
-              )}
+        {posts.map((post, index) => (
+          <Paper
+            variant="outlined"
+            square={false}
+            key={post.id ? post.id : index}
+            style={styles.post}
+          >
+            <p style={styles.postName}>{post.title}</p>
+            <p>{post.content}</p>
+            {post.filePath && (
+              <Image
+                src={post.filePath}
+                style={{ width: 200, display: "block", margin: "auto" }}
+                alt={`Image for ${post.title}`}
+              />
+            )}
+            <div>
+              <IconButton
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave(index)}
+                onClick={() => handleLike(index)}
+              >
+                {hoveredButtons[index] ? (
+                  <FavoriteIcon />
+                ) : (
+                  <FavoriteBorderIcon />
+                )}
+              </IconButton>
+              <p>{post.like}</p>
+            </div>
+            <IconButton onClick={() => removePost(post.id)}>
+              <ClearIcon />
             </IconButton>
-            <p>{post.like}</p>
-          </div>
-          <IconButton onClick={() => removePost(post.id)}>
-            <ClearIcon />
-          </IconButton>
-        </Paper>
-      ))}
+          </Paper>
+        ))}
+      </div>
     </div>
   );
 };
