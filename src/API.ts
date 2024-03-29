@@ -3,7 +3,6 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreatePostInput = {
-  createdAt: string | number | Date;
   id?: string | null,
   title: string,
   content?: string | null,
