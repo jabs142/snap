@@ -277,7 +277,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       )}
       {posts.length <= 0 && (
         <img
-          src="public/images/nopost.png"
+          src="/images/nopost.png"
           alt="No Posts"
           style={{ width: "400px", height: "400px", marginRight: "8px" }}
         />

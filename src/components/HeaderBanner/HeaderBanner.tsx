@@ -29,7 +29,7 @@ const HeaderBanner: React.FC<HeaderBannerProps> = ({
           style={{ display: "flex", alignItems: "center" }}
         >
           <img
-            src="public/images/avatarplaceholder.png"
+            src="/images/avatarplaceholder.png"
             alt="Avatar"
             style={{ width: "24px", height: "24px", marginRight: "8px" }}
           />
