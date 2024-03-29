@@ -17,6 +17,7 @@ const initialState: CreatePostInput = {
   title: "",
   content: "",
   like: 0,
+  createdAt: "",
 };
 const client = generateClient();
 
@@ -195,6 +196,10 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     setHoveredButtons(updatedHoveredButtons);
   };
 
+  const sortedPosts = posts.slice().sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return (
     <div>
       <HeaderBanner
@@ -283,17 +288,19 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         />
       )}
       <div className="postContainer">
-        {posts.map((post, index) => (
-          <PostComponent
-            key={post.id || index}
-            post={post}
-            index={index}
-            hoveredButtons={hoveredButtons}
-            handleMouseEnter={handleMouseEnter}
-            handleMouseLeave={handleMouseLeave}
-            handleLike={handleLike}
-            removePost={removePost}
-          />
+        {sortedPosts.map((post, index) => (
+          <>
+            <PostComponent
+              key={post.id || index}
+              post={post}
+              index={index}
+              hoveredButtons={hoveredButtons}
+              handleMouseEnter={handleMouseEnter}
+              handleMouseLeave={handleMouseLeave}
+              handleLike={handleLike}
+              removePost={removePost}
+            />
+          </>
         ))}
       </div>
 
