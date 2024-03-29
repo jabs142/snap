@@ -48,7 +48,7 @@ Real-time photo sharing web application.
 
 1) Learning Opportunities: I wanted to delve into new technologies and tools which I haven't explored prior, such as GraphQL, AWS cloud services, and NoSQL databases.
 
-2) Real-Time Capabilities: GraphQL was an ideal choice for real-time data processing and synchronization, due to its efficient data fetching capabilities. Combined with AWS AppSync, I could effortlessly build real-time applications that provide instant updates to users.
+2) Real-Time Capabilities: GraphQL was an ideal choice for real-time data processing and synchronization, due to its efficient data fetching capabilities. 
 
 3) Scalability and Flexibility: By leveraging AWS cloud services such as AppSync, DynamoDB, and S3, I was able to ensure scalability and flexibility in our application architecture. These services offer managed solutions for data storage, authentication, and serverless functions.
 
@@ -66,7 +66,7 @@ Real-time photo sharing web application.
   <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/Signup.gif?raw=true">
 </p> -->
 
-* App should be able to verify the user and log the user in
+* App should be able to authenticate the user and log the user in
 
 <!-- <p align="center">
   <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/Login_1.gif?raw=true">
@@ -79,12 +79,14 @@ Real-time photo sharing web application.
 </p> -->
 * Posts should be updated in real time
 * Users should be able to 'like' other users' posts 
+* Users should be able to delete posts 
 
 <br> 
 
 
 ## 🎈 Future Improvements
 <ol>
+    <li>Users should be able to create an album and add post into specific albums  </li>
     <li>Users should be able to comment on other users' posts  </li>
     <li>Users should be able to set their profile pictures  </li>
     <li>Users should be able to change their profile settings  </li>

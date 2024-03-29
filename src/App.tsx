@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { generateClient } from "aws-amplify/api";
+import { type CreatePostInput, type Post } from "./API";
 import { createPost, updatePost, deletePost } from "./graphql/mutations";
 import { listPosts } from "./graphql/queries";
-import { type CreatePostInput, type Post } from "./API";
 import { uploadData, getUrl, remove } from "aws-amplify/storage";
-import { withAuthenticator, Image, Alert, Button } from "@aws-amplify/ui-react";
-import "@aws-amplify/ui-react/styles.css";
 import { type AuthUser } from "aws-amplify/auth";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
-import Paper from "@mui/material/Paper";
-import { IconButton } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ClearIcon from "@mui/icons-material/Clear";
-import "./App.css";
+import { withAuthenticator, Alert, Button } from "@aws-amplify/ui-react";
 import HeaderBanner from "./components/HeaderBanner/HeaderBanner";
 import FooterBanner from "./components/FooterBanner/FooterBanner";
+import PostComponent from "./components/PostComponent/PostComponent";
+import "@aws-amplify/ui-react/styles.css";
+import "./App.css";
 
 const initialState: CreatePostInput = {
   title: "",
@@ -28,6 +24,8 @@ type AppProps = {
   signOut?: UseAuthenticator["signOut"];
   user?: AuthUser;
 };
+
+type Timeout = ReturnType<typeof setTimeout>;
 
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreatePostInput>(initialState);
@@ -43,24 +41,22 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     fetchPosts();
   }, []);
 
-  // Function to show the Alert for 3 seconds and then hide it
   useEffect(() => {
-    if (addPostSuccessful) {
-      const timer = setTimeout(() => {
-        setAddPostSuccessful(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [addPostSuccessful]);
+    let timer: Timeout | null = null;
 
-  useEffect(() => {
-    if (removePostSuccessful) {
-      const timer = setTimeout(() => {
+    if (addPostSuccessful || removePostSuccessful) {
+      timer = setTimeout(() => {
+        setAddPostSuccessful(false);
         setRemovePostSuccessful(false);
       }, 3000);
-      return () => clearTimeout(timer);
     }
-  }, [removePostSuccessful]);
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [addPostSuccessful, removePostSuccessful]);
 
   async function fetchPosts() {
     try {
@@ -68,7 +64,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         query: listPosts,
       });
       const posts = postData.data.listPosts.items;
-      console.log("Posts", posts);
       await Promise.all(
         posts.map(async (post) => {
           if (post.filePath) {
@@ -135,7 +130,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
 
-  // Add a check for the id property before calling addLike
   async function handleLike(index: number) {
     const post = posts[index];
     if (post.id) {
@@ -150,9 +144,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       const postToUpdate = posts[index];
       const updatedPost = { ...postToUpdate };
 
-      // Ensure that the id is defined before proceeding
       if (updatedPost.id) {
-        // Perform the update operation, for example, incrementing the 'like' count
         updatedPost.like = updatedPost.like + 1;
         // Extract only the fields required for update from the updatedPost object
         const input = {
@@ -163,11 +155,10 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         const postData = await client.graphql({
           query: updatePost,
           variables: {
-            input: input, // Pass the extracted input object
+            input: input,
           },
         });
 
-        // Update the posts array with the updated post
         const updatedPosts = [...posts];
         updatedPosts[index] = postData.data.updatePost;
         // Ensure that the filePath is preserved
@@ -183,7 +174,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log("file", file);
     if (file) {
       setFileData(file);
       setFormState({
@@ -256,12 +246,12 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         </div>
       </div>
       {showForm && (
-        <div style={styles.form}>
+        <div className="form">
           <input
             onChange={(event) =>
               setFormState({ ...formState, title: event.target.value })
             }
-            style={styles.titleInput}
+            className="titleInput"
             value={formState.title}
             placeholder="Title"
           />
@@ -269,7 +259,7 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
             onChange={(event) =>
               setFormState({ ...formState, content: event.target.value })
             }
-            style={styles.contentInput}
+            className="contentInput"
             value={formState.content ?? ""}
             placeholder="Content"
           />
@@ -280,179 +270,37 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
               onChange={handleFileInputChange}
             />
           </form>
-          <button style={styles.button} onClick={addPost}>
+          <button className="button" onClick={addPost}>
             Create Post
           </button>
         </div>
       )}
-
-      <div style={styles.container}>
+      {posts.length <= 0 && (
+        <img
+          src="public/images/nopost.png"
+          alt="No Posts"
+          style={{ width: "400px", height: "400px", marginRight: "8px" }}
+        />
+      )}
+      <div className="postContainer">
         {posts.map((post, index) => (
-          <Paper
-            variant="outlined"
-            square={false}
-            key={post.id ? post.id : index}
-            style={styles.post}
-          >
-            <div style={styles.imageContainer}>
-              {post.filePath && (
-                <Image
-                  src={post.filePath}
-                  style={{
-                    width: 150,
-                  }}
-                  alt={`Image for ${post.title}`}
-                />
-              )}
-            </div>
-            <p style={styles.title}>{post.title}</p>
-            <p style={styles.content}>{post.content}</p>
-            <div style={styles.likeContainer}>
-              <div style={styles.likeInfo}>
-                <IconButton
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  onMouseLeave={() => handleMouseLeave(index)}
-                  onClick={() => handleLike(index)}
-                >
-                  {hoveredButtons[index] ? (
-                    <FavoriteIcon />
-                  ) : (
-                    <FavoriteBorderIcon />
-                  )}
-                </IconButton>
-                <p>{post.like}</p>
-              </div>
-              <IconButton
-                onClick={() => removePost(post.id)}
-                style={styles.deleteButton}
-              >
-                <ClearIcon />
-              </IconButton>
-            </div>
-          </Paper>
+          <PostComponent
+            key={post.id || index}
+            post={post}
+            index={index}
+            hoveredButtons={hoveredButtons}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
+            handleLike={handleLike}
+            removePost={removePost}
+          />
         ))}
       </div>
-      {posts.length <= 0 && (
-        <div className="centeredContainer">
-          <img
-            src="public/images/nopost.png"
-            alt="No Posts"
-            className="centeredImage"
-            style={{ width: "400px", height: "400px", marginRight: "8px" }}
-          />
-        </div>
-      )}
 
       <FooterBanner />
     </div>
   );
 };
-
-const styles = {
-  container: {
-    width: "80%",
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
-    gap: 5,
-  },
-  centeredContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "200px",
-  },
-  centeredImage: {
-    width: "100%",
-    maxHeight: "100%",
-  },
-
-  form: {
-    width: "400px",
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 20,
-  },
-  post: {
-    width: 350,
-    height: 350,
-    padding: 5,
-    margin: 5,
-    display: "flex",
-    flexDirection: "column",
-    position: "relative",
-  },
-  imageContainer: {
-    height: "70%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  image: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-  },
-  titleInput: {
-    border: "none",
-    backgroundColor: "#ddd",
-    marginBottom: 10,
-    padding: 8,
-    fontSize: 16,
-  },
-  contentInput: {
-    border: "none",
-    backgroundColor: "#ddd",
-    marginBottom: 20,
-    padding: 8,
-    fontSize: 16,
-  },
-  title: {
-    height: "9%",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    marginTop: 5,
-  },
-  content: {
-    height: "25%",
-    overflowY: "auto",
-  },
-  likeContainer: {
-    height: "10%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "calc(100% - 30px)",
-    padding: "5px 10px",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-  },
-  likeInfo: {
-    display: "flex",
-    alignItems: "center",
-  },
-  deleteButton: {
-    position: "absolute",
-    bottom: 5,
-    right: 5,
-  },
-  postName: { fontSize: 20, fontWeight: "bold" },
-  button: {
-    backgroundColor: "#047895",
-    color: "white",
-    fontSize: 18,
-    padding: "12px 20px",
-    borderRadius: 10,
-    cursor: "pointer",
-    transition: "background-color 0.3s, box-shadow 0.3s",
-    marginTop: "20px",
-  },
-} as const;
 
 const AuthenticatedApp = withAuthenticator(App);
 export default AuthenticatedApp;
