@@ -62,21 +62,23 @@ Real-time photo sharing web application.
 ### General idea:
 * Users should be able to create an account and log in seamlessly. Email verification is required.
 * App should be able to authenticate the user and log the user in
-<!-- <p align="center">
-  <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/Signup.gif?raw=true">
-</p> -->
+<p align="center">
+  <img width="460" height="300" src="https://github.com/jabs142/snap/blob/main/public/images/Sign%20in.gif?raw=true">
+</p>
+
 
 * Users should be able to create a post and upload a picture 
 * Posts should be updated in real time
-<!-- <p align="center">
-  <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/Login_1.gif?raw=true">
-</p> -->
+<p align="center">
+  <img width="460" height="300" src="https://github.com/jabs142/snap/blob/main/public/images/create%20post.gif?raw=true">
+</p>
+
 
 * Users should be able to 'like' other users' posts 
 * Users should be able to delete posts 
-<!-- <p align="center">
-  <img width="460" height="300" src="https://github.com/jabs142/chatter/blob/main/static/images/CreateNewGroup.gif?raw=true">
-</p> -->
+<p align="center">
+  <img width="460" height="300" src="https://github.com/jabs142/snap/blob/main/public/images/like%20and%20delete.gif?raw=true">
+</p>
 
 <br> 
 
